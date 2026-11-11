@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const main=fs.readFileSync('src/server.js','utf8');
+const extra=fs.readFileSync('src/extended.js','utf8');
+const base=fs.readFileSync('database/migrations/001_init.sql','utf8');
+const schema=fs.readFileSync('database/migrations/002_extended.sql','utf8');
+test('school name present',()=>assert.match(main,/Wakilisha Comprehensive School/));
+test('all required public routes present',()=>{for(const x of ['/about','/services','/contact','/news','/gallery','/apply'])assert.ok(main.includes(`'${x}'`),x);});
+test('student login requires name admission and secret',()=>{assert.match(main,/first_name.*admission_number.*password/);assert.match(main,/await verify\(/);});
+test('financial posting idempotent and active only',()=>{assert.match(extra,/s\.status='active'/);assert.match(extra,/ON CONFLICT DO NOTHING/);assert.match(base,/UNIQUE\(student_id,academic_year,term,item\)/);});
+test('practice marks kept out of official assessments',()=>{assert.match(base,/practice_mark/);const official=base.match(/CREATE TABLE IF NOT EXISTS assessments\([^;]+/)[0];assert.doesNotMatch(official,/practice_mark|assignment_id/);assert.match(extra,/Practice assignment marks are intentionally excluded/);});
+test('teacher scope applied to LMS and attendance writes',()=>{assert.match(extra,/req\.user\.role==='teacher'/);assert.match(extra,/teacher_assignments/);});
+test('guardian scoped by account relation',()=>assert.match(extra,/ga\.user_id=\$1/));
+test('CMS edits require admin authorization and restrict core pages to super admin',()=>{assert.match(extra,/r\.post\('\/cms\/:id\/edit',auth,permit\(\.\.\.academic\)/);assert.match(extra,/req\.user\.role!=='super_admin'/);});
+test('SQL uses constrained amounts and relationships',()=>{assert.match(schema,/amount NUMERIC\(12,2\)/);assert.match(schema,/REFERENCES students\(id\)/);});

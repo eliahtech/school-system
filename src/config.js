@@ -1,0 +1,2 @@
+import 'dotenv/config';
+export const config={port:Number(process.env.PORT||3000),school:process.env.SCHOOL_NAME||'Wakilisha Comprehensive School',email:process.env.SCHOOL_EMAIL||'admissions@example.org',phone:process.env.SCHOOL_PHONE||'+254700000000',address:process.env.SCHOOL_ADDRESS||'Kenya',base:process.env.PUBLIC_BASE_URL||'http://localhost:3000',production:process.env.NODE_ENV==='production'};

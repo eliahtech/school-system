@@ -1,0 +1,32 @@
+{
+  "name": "wakilisha-comprehensive-school",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "test": "npm run test:unit && npm run test:syntax && node --test tests/core.test.js",
+    "email:send": "node scripts/send-email.js",
+    "test:unit": "node --test tests/mfa.test.js tests/csv.test.js tests/domain.test.js tests/report-pdf.test.js tests/pesapal.test.js tests/workflow-contracts.test.js tests/architecture.test.js tests/storage.test.js tests/release-contracts.test.js",
+    "test:syntax": "node scripts/check-syntax.js",
+    "payments:reconcile": "node scripts/reconcile-pesapal.js",
+    "finance:bill-term": "node scripts/bill-term.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.3",
+    "bcryptjs": "^2.4.3",
+    "helmet": "^8.0.0",
+    "express-rate-limit": "^7.5.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "nodemailer": "^6.10.0"
+  },
+  "description": "Wakilisha Comprehensive School single-school management development build"
+}
